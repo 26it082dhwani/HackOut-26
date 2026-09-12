@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GreenCharge — Smart EV Charging</title>
+<link rel="stylesheet" href="style.css">
+
+</head>
+<body>
+<div class="app">
+  <div class="topbar"><div class="brand">GREEN<span>CHARGE</span></div><div class="demo">Prototype • Simulated energy data</div></div>
+
+  <section id="login" class="screen active">
+    <div class="hero">
+      <div class="hero-copy">
+        <div class="badge">● INTELLIGENT EV CHARGING</div>
+        <h1>Charge smarter.<br><span class="green">Drive greener.</span></h1>
+        <p>GreenCharge finds a charging window that balances renewable energy, electricity cost, grid demand and your departure deadline.</p>
+        <p class="small">Your journey: Login → EV details → Smart recommendation → Book → Charger access</p>
+      </div>
+      <div class="login-card">
+        <h2>Welcome back</h2><p>Enter your details to access your charging account.</p>
+        <label>Contact number</label><input id="phone" placeholder="+91 98765 43210" inputmode="tel">
+        <label>Password</label><input id="password" type="password" placeholder="••••••••">
+        <button class="btn primary full" onclick="login()">Enter GreenCharge →</button>
+        <div class="center" style="margin-top:14px"><span class="small">New to GreenCharge?</span> <button class="btn secondary" style="padding:7px 10px;margin-left:5px" onclick="go('register')">Create account</button></div>
+        <div class="note">Prototype mode: registration is stored in this browser for now. A database will replace this later.</div>
+      </div>
+    </div>
+  </section>
+
+  <section id="register" class="screen">
+    <div class="hero" style="min-height:calc(100vh - 130px)">
+      <div class="hero-copy">
+        <div class="badge">● CREATE YOUR ACCOUNT</div>
+        <h1>Welcome to<br><span class="green">GreenCharge.</span></h1>
+        <p>Create your account once. Your contact number becomes your login, and your password will be stored securely in the future backend database.</p>
+      </div>
+      <div class="login-card">
+        <h2>Register</h2><p>Enter your details to get started.</p>
+        <label>Contact number</label><input id="regPhone" placeholder="+91 98765 43210" inputmode="tel">
+        <label>Create password</label><input id="regPassword" type="password" placeholder="At least 4 characters">
+        <label>Confirm password</label><input id="regConfirm" type="password" placeholder="Re-enter password">
+        <button class="btn primary full" onclick="registerUser()">Create account →</button>
+        <div class="center" style="margin-top:14px"><button class="btn secondary" onclick="go('login')">← Back to login</button></div>
+        <div class="note">Demo only: browser storage is used until we connect the backend/database.</div>
+      </div>
+    </div>
+  </section>
+
+  <section id="details" class="screen">
+    <div class="page-head"><div><div class="step">STEP 1 OF 4</div><h2>Your EV details</h2><p>Tell us what your vehicle needs. We'll handle the optimization.</p></div></div>
+    <div class="card form-card">
+      <div class="field-grid">
+        <div><label>Car license plate</label><input id="plate" placeholder="DL 01 AB 1234"></div>
+        <div><label>Charging station</label><select id="station"><option>GreenCharge Hub — Sector 18</option><option>GreenCharge Hub — Cyber City</option><option>GreenCharge Hub — Central Avenue</option></select></div>
+        <div><label>Current battery (%)</label><input id="current" type="number" min="1" max="99" value="32"></div>
+        <div><label>Target battery (%)</label><input id="target" type="number" min="2" max="100" value="80"></div>
+        <div><label>Departure time</label><input id="departure" type="time" value="18:00"></div>
+      </div>
+      <div class="actions"><button class="btn secondary" onclick="go('login')">Back</button><button class="btn primary" onclick="optimize()">Find optimized charging →</button></div>
+    </div>
+  </section>
+
+  <section id="options" class="screen">
+    <div class="page-head"><div><div class="step">STEP 2 OF 4</div><h2>Optimized charging options</h2><p id="optionIntro">We compared available time windows against your requirements.</p></div></div>
+    <div id="urgentBox"></div>
+    <div id="optionsList"></div>
+  </section>
+
+  <section id="booking" class="screen">
+    <div class="page-head"><div><div class="step">STEP 3 OF 4</div><h2>Confirm your charging slot</h2><p>Review the reservation before generating your access pass.</p></div></div>
+    <div class="card confirm">
+      <div class="badge">✓ SLOT AVAILABLE</div>
+      <h2 id="bookTime"></h2>
+      <p id="bookStation"></p>
+      <div class="metrics" id="bookMetrics"></div>
+      <div class="actions"><button class="btn secondary" onclick="go('options')">Change slot</button><button class="btn primary" onclick="confirmBooking()">Book & get charger access →</button></div>
+    </div>
+  </section>
+
+  <section id="access" class="screen">
+    <div class="confirm">
+      <div class="step">STEP 4 OF 4</div><h2>Charging pass ready</h2><p>Your reservation has been created. Use the simulated access pass at the charger.</p>
+      <div class="pass">
+        <div class="small">GREENCHARGE • CHARGING PASS</div>
+        <h3 id="passPlate">—</h3>
+        <p id="passInfo">—</p>
+        <div class="qr"></div>
+        <div class="access" id="accessCode">GC-0000</div>
+        <div class="status">✓ Reservation confirmed</div>
+      </div>
+      <button class="btn primary" onclick="unlock()">Unlock charger</button>
+      <div id="charging" style="display:none" class="card" >
+        <div class="status" id="chargeStatus">Charger unlocked • Ready to charge</div>
+        <div class="progress"><i id="chargeProgress"></i></div>
+        <div class="center"><b id="chargePercent">0%</b><p>Simulated charging session</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="thankyou" class="screen">
+    <div class="hero" style="min-height:calc(100vh - 130px);text-align:center;grid-template-columns:1fr">
+      <div class="hero-copy" style="max-width:760px;margin:auto">
+        <div class="badge">✓ CHARGING SESSION COMPLETE</div>
+        <h1>Thank you for<br><span class="green">supporting our cause.</span></h1>
+        <p style="font-size:18px;max-width:650px;margin:0 auto 26px">Every smarter charging decision helps us move toward cleaner energy, lower emissions and a more sustainable electric future.</p>
+        <div class="card" style="max-width:620px;margin:0 auto 24px"><div class="grid3"><div><div class="green" style="font-size:25px">🌱</div><div class="small">Cleaner energy</div></div><div><div class="green" style="font-size:25px">⚡</div><div class="small">Smarter grids</div></div><div><div class="green" style="font-size:25px">🚗</div><div class="small">Greener mobility</div></div></div></div>
+        <button class="btn secondary" onclick="downloadLocalData()">Save my demo data</button><button class="btn primary" onclick="go('login')">← Back to GreenCharge</button>
+      </div>
+    </div>
+  </section>
+</div>
+
+<script src="app.js"></script>
+
+</body>
+</html>
